@@ -2,7 +2,8 @@
 # macOS default; override with `make OPENSCAD=openscad` on Linux/Windows
 OPENSCAD ?= $(firstword $(wildcard /Applications/OpenSCAD*.app/Contents/MacOS/OpenSCAD) openscad)
 
-SRCS := $(wildcard scad/figures/*.scad) $(wildcard scad/weapons/*.scad) scad/fit-test.scad
+SRCS := $(wildcard scad/figures/*.scad) $(wildcard scad/weapons/*.scad) \
+        scad/fit-test.scad scad/first-layer-test.scad
 NAMES := $(basename $(notdir $(SRCS)))
 STLS  := $(addprefix stl/,$(addsuffix .stl,$(NAMES)))
 PNGS  := $(addprefix previews/,$(addsuffix .png,$(NAMES)))
