@@ -9,6 +9,20 @@ stl/  →  slicer (Elegoo Cura / OrcaSlicer, "Elegoo Neptune 4" profile)  →  .
 The printer only understands `.gcode`. STLs on the USB stick will not show up
 on the printer's menu.
 
+## Generating the gcode
+
+```sh
+./scripts/slice_all.sh              # writes to ~/Desktop/toy-soldiers-gcode
+./scripts/slice_all.sh /Volumes/USB # or straight onto the stick
+```
+
+**Watch the bed temperature.** OrcaSlicer's CLI assumes a "Cool Plate" unless
+told otherwise and will emit `M190 S35` — a 35°C bed, far too cold for PLA, and
+your prints will lift off mid-job. That's why we ship
+`profiles/toy-soldiers-pla.json`, which pins 60°C on every plate type; the
+script also fails loudly if a sliced file comes out below 55°C. If you slice by
+hand in the OrcaSlicer GUI instead, set the plate type to **Textured PEI Plate**.
+
 ## Settings
 
 | Setting | Value | Why |
@@ -18,7 +32,8 @@ on the printer's menu.
 | Infill | 15% gyroid/grid | Plenty for solid-feeling toys |
 | Supports | **OFF** | Every model is designed support-free |
 | Brim/raft | None | Bases are wide and flat; textured PEI holds fine |
-| Material | PLA, 200–210°C / bed 60°C | PLA+ is a bit tougher if you have it |
+| Nozzle | 205°C first layer, 200°C after | PLA; PLA+ is a bit tougher if you have it |
+| Bed | 60°C | 65°C if the first layer still lifts |
 
 ## Orientation (already correct in the STLs)
 
