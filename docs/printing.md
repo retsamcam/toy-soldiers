@@ -23,6 +23,19 @@ your prints will lift off mid-job. That's why we ship
 script also fails loudly if a sliced file comes out below 55°C. If you slice by
 hand in the OrcaSlicer GUI instead, set the plate type to **Textured PEI Plate**.
 
+## Bed mesh
+
+The stock start gcode homes but never applies a bed mesh. On a Neptune 4 the
+mesh from screen auto-levelling lives in memory only — it is lost at power-off,
+and `BED_MESH_PROFILE LOAD=default` aborts with "Unknown profile" unless one has
+been saved. So either **run auto-level from the screen and print in the same
+session**, or slice with a mesh command baked in:
+
+```sh
+MESH=calibrate ./scripts/slice_all.sh   # probe fresh each print, ~2 min
+MESH=load ./scripts/slice_all.sh        # only if you have a saved "default" profile
+```
+
 ## Settings
 
 | Setting | Value | Why |
