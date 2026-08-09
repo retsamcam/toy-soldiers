@@ -71,9 +71,9 @@ module head() {
 
 module helmet()
     translate([0, 0, HEAD_CZ + 1]) {
-        difference() {
+        difference() {   // upper half-sphere: cut everything below its centre
             sphere(d=HEAD_D + 3.5);
-            translate([0, 0, -HEAD_D/2]) cube(HEAD_D*2, center=true);
+            translate([0, 0, -HEAD_D]) cube(HEAD_D*2, center=true);
         }
         // brim with 45-degree underside chamfer
         cylinder(d1=HEAD_D + 1, d2=HEAD_D + 5, h=2);
@@ -91,7 +91,7 @@ module cap()   // officer's peaked cap
     }
 
 module backpack()
-    translate([0, -TORSO_D/2, SHOULDER_Z - 6])
+    translate([0, -TORSO_D/2 + 2, SHOULDER_Z - 6])   // +2: embed into the torso back
         hull() {   // sloped underside back to the torso — printable
             translate([0, -1, -4]) rounded_box([13, 2, 4], 1);
             translate([0, -4, 2]) rounded_box([14, 6, 10], 2);

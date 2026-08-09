@@ -33,6 +33,32 @@ def read_stl(path):
     return tris
 
 
+def floating_components(tris):
+    """Connected components whose lowest point is above the bed — these are
+    midair geometry that slicers reject."""
+    parent = {}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for t in tris:
+        vs = [tuple(v) for v in t]
+        for v in vs:
+            parent.setdefault(v, v)
+        for v in vs[1:]:
+            ra, rb = find(vs[0]), find(v)
+            if ra != rb:
+                parent[ra] = rb
+    zmin = {}
+    for t in tris:
+        r = find(tuple(t[0]))
+        zmin[r] = min(zmin.get(r, 1e9), min(v[2] for v in t))
+    return [z for z in zmin.values() if z > 0.5]
+
+
 def main(paths):
     failed = False
     for path in paths:
@@ -51,6 +77,10 @@ def main(paths):
             problems.append(f"height {dims[2]:.1f}mm not ~70mm")
         if min(zs) < -0.01:
             problems.append(f"geometry below z=0 (min z {min(zs):.2f})")
+        floating = floating_components(tris)
+        if floating:
+            problems.append(
+                f"{len(floating)} floating part(s) at z={min(floating):.1f}")
         status = "FAIL" if problems else "ok"
         failed |= bool(problems)
         print(f"{status:4} {name}: {len(tris)} tris, "
